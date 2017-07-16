@@ -38,7 +38,6 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 })
 
 void kthread_bind(struct task_struct *k, unsigned int cpu);
-void kthread_bind_mask(struct task_struct *k, const struct cpumask *mask);
 int kthread_stop(struct task_struct *k);
 bool kthread_should_stop(void);
 bool kthread_should_park(void);
@@ -75,8 +74,6 @@ struct kthread_work {
 	struct list_head	node;
 	kthread_work_func_t	func;
 	struct kthread_worker	*worker;
-	/* Number of canceling calls that are running at the moment. */
-	int			canceling;
 };
 
 #define KTHREAD_WORKER_INIT(worker)	{				\
@@ -130,7 +127,5 @@ bool queue_kthread_work(struct kthread_worker *worker,
 			struct kthread_work *work);
 void flush_kthread_work(struct kthread_work *work);
 void flush_kthread_worker(struct kthread_worker *worker);
-
-bool kthread_cancel_work_sync(struct kthread_work *work);
 
 #endif /* _LINUX_KTHREAD_H */
